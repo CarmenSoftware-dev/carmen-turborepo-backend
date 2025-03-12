@@ -25,6 +25,13 @@
     "packages/*"
   ],
   "dependencies": {
+    "@nestjs/common": "^11.0.11",
+    "@nestjs/swagger": "^11.0.6",
     "npm-check-updates": "^17.1.15"
-  }
+  },
+  "trustedDependencies": [
+    "@nestjs/core",
+    "core-js-pure",
+    "protobufjs"
+  ]
 }
