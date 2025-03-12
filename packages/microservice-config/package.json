@@ -1,0 +1,15 @@
+{
+  "name": "@repo/microservice-config",
+  "version": "1.0.0",
+  "description": "Shared microservice config",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
