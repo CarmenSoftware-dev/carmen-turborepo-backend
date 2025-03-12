@@ -31,7 +31,12 @@
   },
   "trustedDependencies": [
     "@nestjs/core",
+    "@prisma/client",
+    "@prisma/engines",
+    "@scarf/scarf",
     "core-js-pure",
+    "esbuild",
+    "prisma",
     "protobufjs"
   ]
 }

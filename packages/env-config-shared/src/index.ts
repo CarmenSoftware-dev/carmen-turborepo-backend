@@ -1,17 +1,17 @@
 /** @format */
 
-export { microAuthenConfig } from './Config.5001.Authen';
-export { microClusterConfig } from './Config.5002.Cluster';
-export { microLicenseConfig } from './Config.5003.License';
-export { microReportsConfig } from './Config.5004.Reports';
-export { microTenantConfig } from './Config.5005.Tenant';
-export { microNotificationConfig } from './Config.5006.Notification';
-export { microFileConfig } from './Config.5007.File';
+export { microAuthenConfig } from './Config_5001_Authen';
+export { microClusterConfig } from './Config_5002_Cluster';
+export { microLicenseConfig } from './Config_5003_License';
+export { microReportsConfig } from './Config_5004_Reports';
+export { microTenantConfig } from './Config_5005_Tenant';
+export { microNotificationConfig } from './Config_5006_Notification';
+export { microFileConfig } from './Config_5007_File';
 
-export * from './Config.5001.Authen';
-export * from './Config.5002.Cluster';
-export * from './Config.5003.License';
-export * from './Config.5004.Reports';
-export * from './Config.5005.Tenant';
-export * from './Config.5006.Notification';
-export * from './Config.5007.File';
+export * from './Config_5001_Authen';
+export * from './Config_5002_Cluster';
+export * from './Config_5003_License';
+export * from './Config_5004_Reports';
+export * from './Config_5005_Tenant';
+export * from './Config_5006_Notification';
+export * from './Config_5007_File';
