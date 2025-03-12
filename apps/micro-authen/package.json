@@ -27,6 +27,7 @@
     "@nestjs/core": "^11.0.11",
     "@nestjs/microservices": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
+    "@repo/env-config-shared": "*",
     "@repo/microservice-config": "*",
     "@repo/prisma-shared-schema-platform": "*",
     "@repo/prisma-shared-schema-tenant": "*",

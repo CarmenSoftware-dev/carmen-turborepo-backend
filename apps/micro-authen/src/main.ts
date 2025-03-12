@@ -2,23 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConsoleLogger, Logger } from '@nestjs/common';
-
-
-export class microAuthenConfig {
-
-  host: string;
-  port: number;
-
-  constructor() {
-    this.host = process.env.AUTH_SERVICE_HOST ?? '0.0.0.0';
-    this.port = this.getPort();
-  }
-
-  getPort(): number {
-    return parseInt(process.env.AUTH_SERVICE_PORT ?? '5001', 10);
-  }
-}
-
+import { microAuthenConfig } from '@repo/env-config-shared';
 
 async function bootstrap() {
 

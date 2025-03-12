@@ -2,27 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConsoleLogger, Logger } from '@nestjs/common';
-
-
-export class microFileConfig {
-
-  host: string;
-  port: number;
-
-  constructor() {
-    this.host = process.env.FILE_SERVICE_HOST ?? '0.0.0.0';
-    this.port = this.getPort();
-  }
-
-  getPort() : number {
-   if(process.env.FILE_SERVICE_PORT){
-     return parseInt(process.env.FILE_SERVICE_PORT, 5007);
-   }else{
-     return 5007;
-   }
- }
-}
-
+import { microFileConfig } from '@repo/env-config-shared';
 
 async function bootstrap() {
 

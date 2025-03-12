@@ -10,8 +10,8 @@ async function bootstrap() {
   patchNestJsSwagger();
 
   const config = new DocumentBuilder()
-    .setTitle('GateWay API')
-    .setDescription('GateWay API')
+    .setTitle('CarmenSoftware')
+    .setDescription('CarmenSoftware API Gateway')
     .setVersion('1.0')
     .addServer(
       `http://localhost:${process.env.GATEWAY_PORT || 4000}`,
@@ -25,7 +25,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app as any, config);
-  SwaggerModule.setup('api/docs', app as any, document);
+  SwaggerModule.setup('swagger', app as any, document);
 
   await app.listen(process.env.GATEWAY_PORT ?? 4000);
 }

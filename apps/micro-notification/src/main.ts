@@ -2,27 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConsoleLogger, Logger } from '@nestjs/common';
-
-
-export class microNotificationConfig {
-
-  host: string;
-  port: number;
-
-  constructor() {
-    this.host = process.env.NOTIFICATION_SERVICE_HOST ?? '0.0.0.0';
-    this.port = this.getPort();
-  }
-
-  getPort() : number {
-   if(process.env.NOTIFICATION_SERVICE_PORT){
-     return parseInt(process.env.NOTIFICATION_SERVICE_PORT, 5006);
-   }else{
-     return 5006;
-   }
- }
-}
-
+import { microNotificationConfig } from '@repo/env-config-shared';
 
 async function bootstrap() {
 

@@ -30,6 +30,8 @@ import { DepartmentUserModule } from './config/department-user/department-user.m
 import { UnitCommentModule } from './application/unit-comment/unit-comment.module';
 import { LocationsUserModule } from './config/locations-user/locations-user.module';
 import { VendorProductModule } from './application/vendor-product/vendor-product.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
 
 @Module({
   imports: [
