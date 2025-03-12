@@ -31,10 +31,19 @@ import { UnitCommentModule } from './application/unit-comment/unit-comment.modul
 import { LocationsUserModule } from './config/locations-user/locations-user.module';
 import { VendorProductModule } from './application/vendor-product/vendor-product.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { microAuthenConfig } from '@repo/env-config-shared';
 
+const AuthenConfig = new microAuthenConfig();
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: { host: AuthenConfig.host, port: AuthenConfig.port },
+      },
+    ]),
     AuthModule,
     DepartmentUserModule,
     UnitCommentModule,

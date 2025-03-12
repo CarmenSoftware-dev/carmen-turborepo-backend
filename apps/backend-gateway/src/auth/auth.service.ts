@@ -1,32 +1,81 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, ConsoleLogger, HttpException, HttpStatus } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 import { authAxios } from 'src/common/helpers/requests/axios.helper';
+import { ClientProxy } from '@nestjs/microservices';
+import { async, firstValueFrom, Observable } from 'rxjs';
 // import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   private authAxios: AxiosInstance;
-  constructor() {
+  private logger = new ConsoleLogger(AuthService.name);
+  constructor(
+    @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
+  ) {
     this.authAxios = authAxios();
   }
 
+  /**
+   * Login function
+   * @param loginDto
+   * @param version
+   * @returns
+   */
   async login(loginDto: any, version: string) {
-    return await this.authAxios.post(`/login`, loginDto, {
-      params: { version },
-    });
-  }
+    
+    const res : Observable<any> = this.authService.send({ cmd: 'login', service: 'auth' }, {data : loginDto, version: version});
 
-  async register(registerDto: any, version: string) {
-    return await this.authAxios.post(`/register`, registerDto, {
-      params: { version },
+    const response = await firstValueFrom(res);
+
+    this.logger.log({
+      file: AuthService.name,
+      function: this.login.name,
+      res: response,
     });
+
+    if (response.response.status !== HttpStatus.OK) {
+      throw new HttpException(response.response, response.response.status);
+    }
+
+    return response.data;
+
   }
 
   async logout(logoutDto: any, version: string) {
-    return await this.authAxios.post(`/logout`, logoutDto, {
-      params: { version },
+    const res : Observable<any> = this.authService.send({ cmd: 'logout', service: 'auth' }, {data : logoutDto, version: version});
+
+    const response = await firstValueFrom(res);
+
+    this.logger.log({
+      file: AuthService.name,
+      function: this.logout.name,
+      res: response,
     });
+
+    if (response.response.status !== HttpStatus.OK) {
+      throw new HttpException(response.response, response.response.status);
+    }
+
+    return response;
   }
+  async register(registerDto: any, version: string) {
+    const res : Observable<any> = this.authService.send({ cmd: 'register', service: 'auth' }, {data : registerDto, version: version});
+
+    const response = await firstValueFrom(res);
+
+    this.logger.log({
+      file: AuthService.name,
+      function: this.register.name,
+      res: response,
+    });
+
+    if (response.response.status !== HttpStatus.CREATED) {
+      throw new HttpException(response.response, response.response.status);
+    }
+
+    return response.data;
+  }
+
 
   async refreshToken(refreshTokenDto: any, version: string) {
     return await this.authAxios.post(`/refresh-token`, refreshTokenDto, {

@@ -1,14 +1,15 @@
-import { Controller, Logger, Post, Body, Query, Param } from '@nestjs/common';
+import { Controller, Logger, Post, Body, Query, Param, ConsoleLogger, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  private logger = new Logger(AuthController.name);
+  private logger = new ConsoleLogger(AuthController.name);
 
   @Post('login')
-  async login(@Body() loginDto: any, @Query('version') version: string) {
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: any, @Query('version') version: string = '1') {
     this.logger.log({
       file: AuthController.name,
       function: this.login.name,
@@ -18,19 +19,9 @@ export class AuthController {
     return this.authService.login(loginDto, version);
   }
 
-  @Post('register')
-  async register(@Body() registerDto: any, @Query('version') version: string) {
-    this.logger.log({
-      file: AuthController.name,
-      function: this.register.name,
-      registerDto: registerDto,
-      version: version,
-    });
-    return this.authService.register(registerDto, version);
-  }
-
   @Post('logout')
-  async logout(@Body() logoutDto: any, @Query('version') version: string) {
+  @HttpCode(HttpStatus.OK)
+  async logout(@Body() logoutDto: any, @Query('version') version: string = '1') {
     this.logger.log({
       file: AuthController.name,
       function: this.logout.name,
@@ -38,6 +29,18 @@ export class AuthController {
       version: version,
     });
     return this.authService.logout(logoutDto, version);
+  }
+
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() registerDto: any, @Query('version') version: string = '1') {
+    this.logger.log({
+      file: AuthController.name,
+      function: this.register.name,
+      registerDto: registerDto,
+      version: version,
+    });
+    return this.authService.register(registerDto, version);
   }
 
   @Post('refresh-token')
@@ -82,45 +85,45 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto, version);
   }
 
-  @Post('reset-password')
-  async resetPassword(
-    @Body() resetPasswordDto: any,
-    @Query('version') version: string,
-  ) {
-    this.logger.log({
-      file: AuthController.name,
-      function: this.resetPassword.name,
-      resetPasswordDto: resetPasswordDto,
-      version: version,
-    });
-    return this.authService.resetPassword(resetPasswordDto, version);
-  }
+  // @Post('reset-password')
+  // async resetPassword(
+  //   @Body() resetPasswordDto: any,
+  //   @Query('version') version: string,
+  // ) {
+  //   this.logger.log({
+  //     file: AuthController.name,
+  //     function: this.resetPassword.name,
+  //     resetPasswordDto: resetPasswordDto,
+  //     version: version,
+  //   });
+  //   return this.authService.resetPassword(resetPasswordDto, version);
+  // }
 
-  @Post('change-password')
-  async changePassword(
-    @Body() changePasswordDto: any,
-    @Query('version') version: string,
-  ) {
-    this.logger.log({
-      file: AuthController.name,
-      function: this.changePassword.name,
-      changePasswordDto: changePasswordDto,
-      version: version,
-    });
-    return this.authService.changePassword(changePasswordDto, version);
-  }
+  // @Post('change-password')
+  // async changePassword(
+  //   @Body() changePasswordDto: any,
+  //   @Query('version') version: string,
+  // ) {
+  //   this.logger.log({
+  //     file: AuthController.name,
+  //     function: this.changePassword.name,
+  //     changePasswordDto: changePasswordDto,
+  //     version: version,
+  //   });
+  //   return this.authService.changePassword(changePasswordDto, version);
+  // }
 
-  @Post('change-email')
-  async changeEmail(
-    @Body() changeEmailDto: any,
-    @Query('version') version: string,
-  ) {
-    this.logger.log({
-      file: AuthController.name,
-      function: this.changeEmail.name,
-      changeEmailDto: changeEmailDto,
-      version: version,
-    });
-    return this.authService.changeEmail(changeEmailDto, version);
-  }
+  // @Post('change-email')
+  // async changeEmail(
+  //   @Body() changeEmailDto: any,
+  //   @Query('version') version: string,
+  // ) {
+  //   this.logger.log({
+  //     file: AuthController.name,
+  //     function: this.changeEmail.name,
+  //     changeEmailDto: changeEmailDto,
+  //     version: version,
+  //   });
+  //   return this.authService.changeEmail(changeEmailDto, version);
+  // }
 }
