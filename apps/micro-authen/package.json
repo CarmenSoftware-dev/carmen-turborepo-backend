@@ -21,16 +21,24 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.0",
+    "@grpc/proto-loader": "^0.7.13",
     "@nestjs/common": "^11.0.11",
     "@nestjs/core": "^11.0.11",
     "@nestjs/microservices": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
-    "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2",
-    "@repo/supabase-shared": "*",
     "@repo/microservice-config": "*",
     "@repo/prisma-shared-schema-platform": "*",
-    "@repo/prisma-shared-schema-tenant": "*"
+    "@repo/prisma-shared-schema-tenant": "*",
+    "@repo/supabase-shared": "*",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.5",
+    "ioredis": "^5.6.0",
+    "kafkajs": "^2.2.4",
+    "mqtt": "^5.10.4",
+    "nats": "^2.29.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.5",

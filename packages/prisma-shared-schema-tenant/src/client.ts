@@ -5,7 +5,7 @@ const clients: {
 	[key: string]: { client: PrismaClient; datasourceURL: string } | null;
 } = {};
 
-export const prisma_tenant = async (tenantId: string, datasourceURL: string) => {
+export const PrismaClient_TENANT = async (tenantId: string, datasourceURL: string) => {
 	let clientData = clients[tenantId];
 
 	if (clientData) {
@@ -34,4 +34,6 @@ export const prisma_tenant = async (tenantId: string, datasourceURL: string) => 
 			throw new Error(`Failed to connect to the database for tenant: ${tenantId}`);
 		}
 	}
+
+	return null;
 };

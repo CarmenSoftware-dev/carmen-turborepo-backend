@@ -1,5 +1,5 @@
 /** @format */
 
-export { SupabaseClient, supabase } from './client';
+export { SupabaseClient } from './client';
 
 export * from './client';

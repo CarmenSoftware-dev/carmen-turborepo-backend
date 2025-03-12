@@ -1,5 +1,7 @@
 /** @format */
 
-export { prisma_system } from './client';
+import { PrismaClient } from '../generated/client/index';
 
-export * from '../generated/client';
+export const PrismaClient_SYSTEM = new PrismaClient();
+
+export * from '../generated/client/index';

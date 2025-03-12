@@ -1,5 +1,5 @@
 /** @format */
 
-export { prisma_tenant } from './client';
+export { PrismaClient_TENANT } from './client';
 
 export * from '../generated/client';

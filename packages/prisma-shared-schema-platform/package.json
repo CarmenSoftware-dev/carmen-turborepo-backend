@@ -2,7 +2,8 @@
   "name": "@repo/prisma-shared-schema-platform",
   "version": "1.0.0",
   "author": "",
-  "main": "index.js",
+  "main": "./src/index.ts",
+  "type": "commonjs",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -10,11 +11,10 @@
   "keywords": [],
   "license": "ISC",
   "scripts": {
-    "db:generate": "npm run prisma generate",
-    "db:migrate": "npm run prisma migrate dev --skip-generate",
-    "db:deploy": "npm run prisma migrate deploy"
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:deploy": "prisma migrate deploy"
   },
-  "type": "commonjs",
   "dependencies": {
     "@prisma/client": "6.5.0"
   },

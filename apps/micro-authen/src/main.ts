@@ -14,13 +14,9 @@ export class microAuthenConfig {
     this.port = this.getPort();
   }
 
-  getPort() : number {
-   if(process.env.AUTH_SERVICE_PORT){
-     return parseInt(process.env.AUTH_SERVICE_PORT, 5001);
-   }else{
-     return 5001;
-   }
- }
+  getPort(): number {
+    return parseInt(process.env.AUTH_SERVICE_PORT ?? '5001', 10);
+  }
 }
 
 
