@@ -35,16 +35,16 @@ export class AuthController {
   @MessagePattern({ cmd: 'refresh-token', service: 'auth' })
   refreshToken(@Payload() payload: any) {
     const version: string = payload.version ?? 1;
-    const refreshTokenDto: RefreshTokenDto = payload.data;
+    const refreshTokenDto: any = payload.data;
     return this.authService.refreshToken(refreshTokenDto, version);
   }
 
-  @MessagePattern({ cmd: 'verify-token', service: 'auth' })
-  verifyToken(@Payload() payload: any) {
-    const version: string = payload.version ?? 1;
-    const verifyTokenDto: VerifyTokenDto = payload.data;
-    return this.authService.verifyToken(verifyTokenDto, version);
-  }
+  // @MessagePattern({ cmd: 'verify-token', service: 'auth' })
+  // verifyToken(@Payload() payload: any) {
+  //   const version: string = payload.version ?? 1;
+  //   const verifyTokenDto: any = payload.data;
+  //   return this.authService.verifyToken(verifyTokenDto, version);
+  // }
 
   @MessagePattern({ cmd: 'forgot-password', service: 'auth' })
   forgotPassword(@Payload() payload: any) {

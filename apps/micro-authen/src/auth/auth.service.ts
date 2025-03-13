@@ -105,7 +105,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(refreshTokenDto: RefreshTokenDto, version: string) {
+  async refreshToken(refreshTokenDto: any, version: string) {
     const { data, error } = await this.supabase.auth.refreshSession(refreshTokenDto);
 
     this.logger.log({
@@ -127,30 +127,30 @@ export class AuthService {
     };
   }
 
-  async verifyToken(verifyTokenDto: VerifyTokenDto, version: string) {
-    const { data, error } = await this.supabase.auth.verifyOtp({
-      email: verifyTokenDto.email,
-      token: verifyTokenDto.token,
-    });
+  // async verifyToken(verifyTokenDto: any, version: string) {
+  //   const { data, error } = await this.supabase.auth.verifyOtp({
+  //     email: verifyTokenDto.email,
+  //     token: verifyTokenDto.token,
+  //   });
 
-    this.logger.log({
-      file: AuthService.name,
-      function: this.verifyToken.name,
-      verifyTokenDto: verifyTokenDto,
-      version: version,
-    });
+  //   this.logger.log({
+  //     file: AuthService.name,
+  //     function: this.verifyToken.name,
+  //     verifyTokenDto: verifyTokenDto,
+  //     version: version,
+  //   });
 
-    if (error) {
-      return {
-        response: { status: HttpStatus.BAD_REQUEST, message: error.message },
-      };
-    }
+  //   if (error) {
+  //     return {
+  //       response: { status: HttpStatus.BAD_REQUEST, message: error.message },
+  //     };
+  //   }
 
-    return {
-      data: data,
-      response: { status: HttpStatus.OK, message: 'Verify token successful' },
-    };
-  }
+  //   return {
+  //     data: data,
+  //     response: { status: HttpStatus.OK, message: 'Verify token successful' },
+  //   };
+  // }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto, version: string) {
     const { data, error } = await this.supabase.auth.resetPasswordForEmail(forgotPasswordDto.email, {
@@ -200,7 +200,7 @@ export class AuthService {
   //   };
   // }
 
-  async changePassword(changePasswordDto: ChangePasswordDto, version: string) {
+  async changePassword(changePasswordDto: any, version: string) {
     const { data, error } = await this.supabase.auth.updateUser({
       password: changePasswordDto.password,
     });
@@ -224,7 +224,7 @@ export class AuthService {
     };
   }
 
-  async changeEmail(changeEmailDto: ChangeEmailDto, version: string) {
+  async changeEmail(changeEmailDto: any, version: string) {
     const { data, error } = await this.supabase.auth.updateUser({
       email: changeEmailDto.email,
     });
