@@ -3,7 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Copy root package files first
 COPY package*.json ./
+COPY package-lock.json ./
 COPY turbo.json ./
 COPY tsconfig.json ./
 
@@ -14,8 +16,8 @@ COPY packages/ ./packages/
 ARG APP_NAME
 COPY apps/${APP_NAME} ./apps/${APP_NAME}
 
-# Install dependencies
-RUN npm install
+# Clean install dependencies
+RUN npm ci
 
 # Build the app
 RUN npm run build --filter=${APP_NAME}
@@ -27,6 +29,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY package-lock.json ./
 COPY turbo.json ./
 
 # Copy built app
