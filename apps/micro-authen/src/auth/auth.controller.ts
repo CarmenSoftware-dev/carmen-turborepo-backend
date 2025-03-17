@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { IInviteUser, IRegisterConfirm, RegisterDto } from './dto/register.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ForgotPasswordDto } from './dto/forgotpassword.dto';
 
@@ -14,6 +14,7 @@ export class AuthController {
   login(@Payload() payload: any) {
     const version: string = payload.version ?? 1;
     const loginDto: LoginDto = payload.data;
+    
     return this.authService.login(loginDto, version);
   }
 
@@ -29,13 +30,31 @@ export class AuthController {
   register(@Payload() payload: any) {
     const version: string = payload.version ?? 1;
     const registerDto: RegisterDto = payload.data;
+
     return this.authService.register(registerDto, version);
+  }
+
+  @MessagePattern({ cmd: 'invite-user', service: 'auth' })
+  inviteUser(@Payload() payload: any) {
+    const version: string = payload.version ?? 1;
+    const inviteUserDto: IInviteUser = payload.data;
+
+    return this.authService.inviteUser(inviteUserDto, version);
+  }
+
+  @MessagePattern({ cmd: 'register-confirm', service: 'auth' })
+  registerConfirm(@Payload() payload: any) {
+    const version: string = payload.version ?? 1;
+    const registerConfirmDto: IRegisterConfirm = payload.data;
+
+    return this.authService.registerConfirm(registerConfirmDto, version);
   }
 
   @MessagePattern({ cmd: 'refresh-token', service: 'auth' })
   refreshToken(@Payload() payload: any) {
     const version: string = payload.version ?? 1;
     const refreshTokenDto: any = payload.data;
+
     return this.authService.refreshToken(refreshTokenDto, version);
   }
 
@@ -50,6 +69,7 @@ export class AuthController {
   forgotPassword(@Payload() payload: any) {
     const version: string = payload.version ?? 1;
     const forgotPasswordDto: ForgotPasswordDto = payload.data;
+    
     return this.authService.forgotPassword(forgotPasswordDto, version);
   }
 

@@ -17,12 +17,12 @@ import { ProductItemGroupModule } from './config/product-item-group/product-item
 import { ProductLocationModule } from './config/product-location/product-location.module';
 import { ProductSubCategoryModule } from './config/product-sub-category/product-sub-category.module';
 import { ProductsModule } from './config/products/products.module';
-import { PurchaseOrderModule } from './config/purchase-order/purchase-order.module';
-import { PurchaseRequestModule } from './config/purchase-request/purchase-request.module';
+import { PurchaseOrderModule } from './application/purchase-order/purchase-order.module';
+import { PurchaseRequestModule } from './application/purchase-request/purchase-request.module';
 import { RunningCodeModule } from './config/running-code/running-code.module';
 import { StoreRequisitionModule } from './config/store-requisition/store-requisition.module';
 import { UnitsModule } from './config/units/units.module';
-import { UserBusinessUnitModule } from './config/user-business-unit/user-business-unit.module';
+import { UserBusinessUnitModule } from './application/user-business-unit/user-business-unit.module';
 import { UserLocationModule } from './config/user-location/user-location.module';
 import { VendorsModule } from './config/vendors/vendors.module';
 import { WorkflowsModule } from './config/workflows/workflows.module';

@@ -1,0 +1,25 @@
+meta {
+  name: 02 - Confrim Register
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/api/auth/register-confirm
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "test@test.com",
+    "email": "test@test.com",
+    "email_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiaW52aXRlIiwidXNlcm5hbWUiOiJ0ZXN0QHRlc3QuY29tIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNzQyMTc4MTA3LCJleHAiOjE3NDIyNjQ1MDd9.FNDevUVdpE97t8hf3WSSeBO-6rrNtXMyz1Gjc4QEgPs",
+    "password": "123456",
+    "user_info": {
+      "first_name" : "TEST",
+      "middle_name" : "(DEVELOPER)",
+      "last_name": "CARMEN SOFTWARE"
+    }
+  }
+}

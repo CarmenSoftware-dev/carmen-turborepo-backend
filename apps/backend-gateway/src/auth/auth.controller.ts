@@ -1,5 +1,6 @@
 import { Controller, Logger, Post, Body, Query, Param, ConsoleLogger, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { InviteUserDto, LoginDto, RegisterConfirmDto } from './dto/auth.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -9,7 +10,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: any, @Query('version') version: string = '1') {
+  async login(@Body() loginDto: LoginDto, @Query('version') version: string = '1') {
     this.logger.log({
       file: AuthController.name,
       function: this.login.name,
@@ -43,6 +44,30 @@ export class AuthController {
     return this.authService.register(registerDto, version);
   }
 
+  @Post('invite-user')
+  @HttpCode(HttpStatus.OK)
+  async inviteUser(@Body() inviteUserDto: InviteUserDto, @Query('version') version: string = '1') {
+    this.logger.log({
+      file: AuthController.name,
+      function: this.inviteUser.name,
+      inviteUserDto: inviteUserDto, 
+      version: version,
+    });
+    return this.authService.inviteUser(inviteUserDto, version);
+  }
+
+  @Post('register-confirm')
+  @HttpCode(HttpStatus.CREATED)
+  async registerConfirm(@Body() registerConfirmDto: RegisterConfirmDto, @Query('version') version: string = '1') {
+    this.logger.log({
+      file: AuthController.name,
+      function: this.registerConfirm.name,
+      registerConfirmDto: registerConfirmDto,
+      version: version,
+    });
+    return this.authService.registerConfirm(registerConfirmDto, version);
+  }
+  
   @Post('refresh-token')
   async refreshToken(
     @Body() refreshTokenDto: any,

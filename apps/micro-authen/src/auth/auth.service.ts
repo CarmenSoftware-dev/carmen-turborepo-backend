@@ -6,13 +6,16 @@ import {
   Logger,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { IInviteUser, IRegisterConfirm, RegisterDto } from './dto/register.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { SupabaseClient } from '@repo/supabase-shared';
-import { PrismaClient_SYSTEM } from '@repo/prisma-shared-schema-platform';
-import { Http2ServerRequest } from 'http2';
-import { async } from 'rxjs';
+import {
+  PrismaClient_SYSTEM,
+  tb_user,
+} from '@repo/prisma-shared-schema-platform';
 import { ForgotPasswordDto } from './dto/forgotpassword.dto';
+import { JwtService } from '@nestjs/jwt';
+import { hashPasswordAsync } from '../utils/bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +24,10 @@ export class AuthService {
   constructor(
     @Inject('PRISMA_SYSTEM')
     private readonly prisma: typeof PrismaClient_SYSTEM,
-    @Inject('SUPABASE') private readonly supabase: typeof SupabaseClient,
+    @Inject('SUPABASE')
+    private readonly supabase: typeof SupabaseClient,
+
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(loginDto: LoginDto, version: string) {
@@ -34,6 +40,7 @@ export class AuthService {
       data: { session },
       error,
     } = await this.supabase.auth.signInWithPassword(data);
+
 
     this.logger.log({
       file: AuthService.name,
@@ -50,14 +57,23 @@ export class AuthService {
       };
     }
 
+    const access_token = this.jwtService.sign(
+      { email: loginDto.email },
+      { expiresIn: '1h' }
+    );
+
+    const refresh_token = this.jwtService.sign(
+      { email: loginDto.email },
+      { expiresIn: '1d' }
+    );
+
     return {
-      data: session,
+      data: { access_token: access_token, refresh_token: refresh_token },
       response: { status: HttpStatus.OK, message: 'Login successful' },
     };
   }
 
   async logout(logoutDto: LogoutDto, version: string) {
-
     const { error } = await this.supabase.auth.signOut();
 
     this.logger.log({
@@ -105,8 +121,133 @@ export class AuthService {
     };
   }
 
+  async inviteUser(inviteUserDto: IInviteUser, version: string) {
+    const findUser = await this.prisma.tb_user.findFirst({
+      where: { email: inviteUserDto.email },
+    });
+
+    if (findUser) {
+      return {
+        response: {
+          status: HttpStatus.CONFLICT,
+          message: 'User already exists',
+        },
+      };
+    }
+
+    const { ...payload }: object = {
+      type: 'invite',
+      username: inviteUserDto.email,
+      email: inviteUserDto.email,
+    };
+
+    const token = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_INVITE_EXPIRES_IN || '1d',
+    });
+
+    return {
+      data: { token: token },
+      response: { status: HttpStatus.OK, message: 'Invite user successful' },
+    };
+  }
+
+  async registerConfirm(registerConfirmDto: IRegisterConfirm, version: string) {
+    const payload = await this.jwtService.verify(
+      registerConfirmDto.email_token,
+    );
+
+    if (payload.type !== 'invite') {
+      return {
+        response: { status: HttpStatus.UNAUTHORIZED, message: 'Invalid token' },
+      };
+    }
+
+    if (
+      payload.email !== registerConfirmDto.email ||
+      payload.username !== registerConfirmDto.username
+    ) {
+      return {
+        response: { status: HttpStatus.UNAUTHORIZED, message: 'Invalid token' },
+      };
+    }
+
+    const findUsername = await this.prisma.tb_user.findFirst({
+      where: { username: registerConfirmDto.username },
+    });
+
+    if (findUsername) {
+      return {
+        response: {
+          status: HttpStatus.CONFLICT,
+          message: 'Username already exists',
+        },
+      };
+    }
+
+    const findEmail = await this.prisma.tb_user.findFirst({
+      where: { email: registerConfirmDto.email },
+    });
+
+    if (findEmail) {
+      return {
+        response: {
+          status: HttpStatus.CONFLICT,
+          message: 'Email already exists',
+        },
+      };
+    }
+
+    const { data, error } = await this.supabase.auth.signUp({
+      email: registerConfirmDto.email,
+      password: registerConfirmDto.password,
+    });
+
+    if (error) {
+      return {
+        response: { status: HttpStatus.BAD_REQUEST, message: error.message },
+      };
+    }
+
+    const createUser = await this.prisma.tb_user.create({
+      data: {
+        username: registerConfirmDto.username,
+        email: registerConfirmDto.email,
+        is_active: true,
+      },
+    });
+
+    // const hashedPassword = await hashPasswordAsync(registerConfirmDto.password);
+    // console.log(hashedPassword, 'password');
+
+    await this.prisma.tb_password.create({
+      data: {
+        user_id: createUser.id,
+        hash: registerConfirmDto.password,
+        is_active: true,
+      },
+    });
+
+    await this.prisma.tb_user_profile.create({
+      data: {
+        user_id: createUser.id,
+        firstname: registerConfirmDto.user_info.first_name,
+        middlename: registerConfirmDto.user_info.middle_name,
+        lastname: registerConfirmDto.user_info.last_name,
+      },
+    });
+
+    return {
+      data: { id: createUser.id },
+      response: {
+        status: HttpStatus.CREATED,
+        message: 'Register successful',
+      },
+    };
+  }
+
   async refreshToken(refreshTokenDto: any, version: string) {
-    const { data, error } = await this.supabase.auth.refreshSession(refreshTokenDto);
+    const { data, error } =
+      await this.supabase.auth.refreshSession(refreshTokenDto);
 
     this.logger.log({
       file: AuthService.name,
@@ -153,9 +294,12 @@ export class AuthService {
   // }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto, version: string) {
-    const { data, error } = await this.supabase.auth.resetPasswordForEmail(forgotPasswordDto.email, {
-      redirectTo: forgotPasswordDto.redirectTo,
-    });
+    const { data, error } = await this.supabase.auth.resetPasswordForEmail(
+      forgotPasswordDto.email,
+      {
+        redirectTo: forgotPasswordDto.redirectTo,
+      },
+    );
 
     this.logger.log({
       file: AuthService.name,
@@ -172,7 +316,10 @@ export class AuthService {
 
     return {
       data: data,
-      response: { status: HttpStatus.OK, message: 'Forgot password successful' },
+      response: {
+        status: HttpStatus.OK,
+        message: 'Forgot password successful',
+      },
     };
   }
 
@@ -220,7 +367,10 @@ export class AuthService {
 
     return {
       data: data,
-      response: { status: HttpStatus.OK, message: 'Change password successful' },
+      response: {
+        status: HttpStatus.OK,
+        message: 'Change password successful',
+      },
     };
   }
 
@@ -247,5 +397,4 @@ export class AuthService {
       response: { status: HttpStatus.OK, message: 'Change email successful' },
     };
   }
-
 }

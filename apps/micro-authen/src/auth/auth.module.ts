@@ -4,8 +4,15 @@ import { AuthController } from './auth.controller';
 import { PrismaClient_SYSTEM } from '@repo/prisma-shared-schema-platform';
 import { PrismaClient_TENANT } from '@repo/prisma-shared-schema-tenant';
 import { SupabaseClient } from '@repo/supabase-shared';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
+    }),
+  ],  
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -21,6 +28,7 @@ import { SupabaseClient } from '@repo/supabase-shared';
       provide: 'PRISMA_TENANT',
       useValue: PrismaClient_TENANT,
     },
+
   ],
   exports: [AuthService],
 })
