@@ -216,8 +216,8 @@ export class AuthService {
       },
     });
 
-    // const hashedPassword = await hashPasswordAsync(registerConfirmDto.password);
-    // console.log(hashedPassword, 'password');
+    const hashedPassword = await hashPasswordAsync(registerConfirmDto.password);
+    console.log(hashedPassword, 'password');
 
     await this.prisma.tb_password.create({
       data: {
