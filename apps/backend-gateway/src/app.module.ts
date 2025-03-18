@@ -31,10 +31,11 @@ import { UnitCommentModule } from './application/unit-comment/unit-comment.modul
 import { LocationsUserModule } from './config/locations-user/locations-user.module';
 import { VendorProductModule } from './application/vendor-product/vendor-product.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { microAuthenConfig } from '@repo/env-config-shared';
+import { microAuthenConfig, microClusterConfig } from '@repo/env-config-shared';
 import { ClusterModule } from './config/cluster/cluster.module';
 
 const AuthenConfig = new microAuthenConfig();
+const ClusterConfig = new microClusterConfig();
 
 @Module({
   imports: [
@@ -43,6 +44,11 @@ const AuthenConfig = new microAuthenConfig();
         name: 'AUTH_SERVICE',
         transport: Transport.TCP,
         options: { host: AuthenConfig.host, port: AuthenConfig.port },
+      },
+      {
+        name: 'CLUSTER_SERVICE',
+        transport: Transport.TCP,
+        options: { host: ClusterConfig.host, port: ClusterConfig.port },
       },
     ]),
     AuthModule,
