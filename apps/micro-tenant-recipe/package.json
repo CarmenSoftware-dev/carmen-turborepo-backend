@@ -1,5 +1,5 @@
 {
-  "name": "micro-cluster",
+  "name": "micro-tenant-recipe",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -7,12 +7,12 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "dev": "nest start --watch",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

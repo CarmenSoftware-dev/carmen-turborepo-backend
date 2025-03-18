@@ -9,9 +9,9 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "../../",
     "paths": {
-      "@repo/*": ["../../packages/*"]
+      "@repo/*": ["packages/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
