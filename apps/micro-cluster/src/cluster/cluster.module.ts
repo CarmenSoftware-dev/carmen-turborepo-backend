@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ClusterService } from './cluster.service';
 import { ClusterController } from './cluster.controller';
 import { PrismaClient_SYSTEM } from '@repo/prisma-shared-schema-platform';
-import { SupabaseClient } from '@repo/supabase-shared';
 import { PrismaClient_TENANT } from '@repo/prisma-shared-schema-tenant';
+import { SupabaseClient } from '@repo/supabase-shared';
 
 @Module({
-  providers: [
-    ClusterService,
+  controllers: [ClusterController],
+  providers: [ClusterService,
     {
       provide: 'PRISMA_SYSTEM',
       useValue: PrismaClient_SYSTEM,
@@ -21,6 +21,6 @@ import { PrismaClient_TENANT } from '@repo/prisma-shared-schema-tenant';
       useValue: PrismaClient_TENANT,
     },
   ],
-  controllers: [ClusterController],
+  exports: [ClusterService],
 })
 export class ClusterModule {}

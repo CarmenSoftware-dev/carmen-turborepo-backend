@@ -15,7 +15,7 @@ import {
 } from '@repo/prisma-shared-schema-platform';
 import { ForgotPasswordDto } from './dto/forgotpassword.dto';
 import { JwtService } from '@nestjs/jwt';
-import { hashPasswordAsync } from '../utils/bcrypt';
+import { hashPassword } from '../utils/bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -216,7 +216,7 @@ export class AuthService {
       },
     });
 
-    const hashedPassword = await hashPasswordAsync(registerConfirmDto.password);
+    const hashedPassword = await hashPassword(registerConfirmDto.password);
     console.log(hashedPassword, 'password');
 
     await this.prisma.tb_password.create({

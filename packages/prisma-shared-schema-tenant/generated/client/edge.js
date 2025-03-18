@@ -1057,7 +1057,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/samutpra/Documents/GitHub/carmen-turborepo-backend/packages/prisma-shared-schema-tenant/generated/client",
+      "value": "C:\\Users\\P_pop\\Desktop\\Carmen\\carmen-turborepo-backend\\packages\\prisma-shared-schema-tenant\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -1066,7 +1066,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
@@ -1074,7 +1074,7 @@ const config = {
       "postgresqlExtensions",
       "relationJoins"
     ],
-    "sourceFilePath": "/Users/samutpra/Documents/GitHub/carmen-turborepo-backend/packages/prisma-shared-schema-tenant/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\P_pop\\Desktop\\Carmen\\carmen-turborepo-backend\\packages\\prisma-shared-schema-tenant\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

@@ -32,6 +32,7 @@ import { LocationsUserModule } from './config/locations-user/locations-user.modu
 import { VendorProductModule } from './application/vendor-product/vendor-product.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microAuthenConfig } from '@repo/env-config-shared';
+import { ClusterModule } from './config/cluster/cluster.module';
 
 const AuthenConfig = new microAuthenConfig();
 
@@ -71,6 +72,7 @@ const AuthenConfig = new microAuthenConfig();
     UserLocationModule,
     VendorsModule,
     WorkflowsModule,
+    ClusterModule,
   ],
   controllers: [AppController],
   providers: [

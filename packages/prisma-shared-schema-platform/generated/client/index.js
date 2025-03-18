@@ -398,7 +398,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/samutpra/Documents/GitHub/carmen-turborepo-backend/packages/prisma-shared-schema-platform/generated/client",
+      "value": "C:\\Users\\P_pop\\Desktop\\Carmen\\carmen-turborepo-backend\\packages\\prisma-shared-schema-platform\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -407,7 +407,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
@@ -415,7 +415,7 @@ const config = {
       "postgresqlExtensions",
       "relationJoins"
     ],
-    "sourceFilePath": "/Users/samutpra/Documents/GitHub/carmen-turborepo-backend/packages/prisma-shared-schema-platform/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\P_pop\\Desktop\\Carmen\\carmen-turborepo-backend\\packages\\prisma-shared-schema-platform\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -478,8 +478,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
-path.join(process.cwd(), "generated/client/libquery_engine-darwin-arm64.dylib.node")
+path.join(__dirname, "query_engine-windows.dll.node");
+path.join(process.cwd(), "generated/client/query_engine-windows.dll.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/client/schema.prisma")
