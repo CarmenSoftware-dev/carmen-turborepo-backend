@@ -5,28 +5,28 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 export class BusinessUnitController {
   constructor(private readonly businessUnitService: BusinessUnitService) {}
 
-  @MessagePattern({ cmd: 'find-all', service: 'business-unit' })
-  async findAll() {
-      // return this.businessUnitService.findAll();
-    }
+  @MessagePattern({ cmd: 'business-unit.create', service: 'business-unit' })
+  async createBusinessUnit(@Payload() payload: any) {
+    // return this.businessUnitService.create(payload);
+  }
 
-    @MessagePattern({ cmd: 'find-one', service: 'business-unit' })
-    async findOne(@Payload() payload: any) {
-      // return this.businessUnitService.findOne(payload);
-    }
+  @MessagePattern({ cmd: 'business-unit.update', service: 'business-unit' })
+  async updateBusinessUnit(@Payload() payload: any) {
+    // return this.businessUnitService.update(payload);
+  }
 
-    @MessagePattern({ cmd: 'create', service: 'business-unit' })
-    async create(@Payload() payload: any) {
-      // return this.businessUnitService.create(payload); 
-    }
+  @MessagePattern({ cmd: 'business-unit.delete', service: 'business-unit' })
+  async deleteBusinessUnit(@Payload() payload: any) {
+    // return this.businessUnitService.delete(payload);
+  }
 
-    @MessagePattern({ cmd: 'update', service: 'business-unit' })
-    async update(@Payload() payload: any) {
-      // return this.businessUnitService.update(payload);
-    } 
+  @MessagePattern({ cmd: 'business-unit.list', service: 'business-unit' })
+  async listBusinessUnit(@Payload() payload: any) {
+    // return this.businessUnitService.findAll();
+  }
 
-    @MessagePattern({ cmd: 'delete', service: 'business-unit' })
-    async delete(@Payload() payload: any) {
-      // return this.businessUnitService.delete(payload);
-    }
+  @MessagePattern({ cmd: 'business-unit.get-by-id', service: 'business-unit' })
+  async getBusinessUnitById(@Payload() payload: any) {
+    // return this.businessUnitService.findOne(payload);
+  }
 }

@@ -23,7 +23,7 @@ export class ClusterController {
 
   @MessagePattern({ cmd: 'cluster.list', service: 'cluster' })
   async listCluster(data: any) {
-    return this.clusterService.listCluster(data);
+    return this.clusterService.listCluster();
   }
 
   @MessagePattern({ cmd: 'cluster.get-by-id', service: 'cluster' })

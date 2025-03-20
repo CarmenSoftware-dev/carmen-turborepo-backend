@@ -32,7 +32,8 @@ import { LocationsUserModule } from './config/locations-user/locations-user.modu
 import { VendorProductModule } from './application/vendor-product/vendor-product.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microAuthenConfig, microClusterConfig } from '@repo/env-config-shared';
-import { ClusterModule } from './config/cluster/cluster.module';
+import { ClusterModule } from './ms-cluster/cluster/cluster.module';
+import { BusinessUnitModule } from './ms-cluster/business-unit/business-unit.module';
 
 const AuthenConfig = new microAuthenConfig();
 const ClusterConfig = new microClusterConfig();
@@ -79,6 +80,7 @@ const ClusterConfig = new microClusterConfig();
     VendorsModule,
     WorkflowsModule,
     ClusterModule,
+    BusinessUnitModule,
   ],
   controllers: [AppController],
   providers: [

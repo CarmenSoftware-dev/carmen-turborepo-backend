@@ -5,7 +5,15 @@ meta {
 }
 
 post {
-  url: 
-  body: none
+  url: {{host}}/api/config/cluster
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "code": "C-001",
+    "name": "Cluster 01",
+    "is_active": true
+  }
 }

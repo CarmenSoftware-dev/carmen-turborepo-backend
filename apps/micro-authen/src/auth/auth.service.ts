@@ -41,7 +41,6 @@ export class AuthService {
       error,
     } = await this.supabase.auth.signInWithPassword(data);
 
-
     this.logger.log({
       file: AuthService.name,
       function: this.login.name,
@@ -57,18 +56,62 @@ export class AuthService {
       };
     }
 
-    const access_token = this.jwtService.sign(
-      { email: loginDto.email },
-      { expiresIn: '1h' }
-    );
+    const userInfo = await this.prisma.tb_user_profile.findFirst({
+      where: {
+        user_id: session.user.id,
+      },
+      select: {
+        firstname: true,
+        middlename: true,
+        lastname: true,
+      },
+    });
 
-    const refresh_token = this.jwtService.sign(
-      { email: loginDto.email },
-      { expiresIn: '1d' }
-    );
+    const userBusinessUnit = await this.prisma.tb_user_tb_business_unit
+    .findMany({
+      where: {
+        user_id: session.user.id,
+        is_active: true,
+      },
+      select: {
+        is_default: true,
+        tb_business_unit: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
+    .then((res) => {
+      return res.map((item) => {
+        return {
+          id: item.tb_business_unit.id,
+          name: item.tb_business_unit.name,
+          is_default: item.is_default,
+        };
+      });
+    });
+
+    // const access_token = this.jwtService.sign(
+    //   { email: loginDto.email },
+    //   { expiresIn: '1h' },
+    // );
+
+    // const refresh_token = this.jwtService.sign(
+    //   { email: loginDto.email },
+    //   { expiresIn: '1d' },
+    // );
 
     return {
-      data: { access_token: access_token, refresh_token: refresh_token },
+      data: {
+        user_id: session.user.id,
+        email: session.user.email,
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        user_info: userInfo,
+        business_unit: userBusinessUnit,
+      },
       response: { status: HttpStatus.OK, message: 'Login successful' },
     };
   }

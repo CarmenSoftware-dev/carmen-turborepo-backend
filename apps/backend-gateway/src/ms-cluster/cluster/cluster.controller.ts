@@ -12,56 +12,59 @@ export class ClusterController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll() {
+  async getListCluster() {
     this.logger.debug({
       file: ClusterController.name,
-      function: this.findAll.name,
+      function: this.getListCluster.name,
     });
-    // return this.clusterService.findAll();
+    return this.clusterService.listCluster();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string) {
+  async getClusterById(@Param('id') id: string) {
     this.logger.debug({
       file: ClusterController.name,
-      function: this.findOne.name,
+      function: this.getClusterById.name,
       id: id,
     });
-    // return this.clusterService.findOne(id);
+    return this.clusterService.getClusterById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createClusterDto: ClusterCreateDto) {
+  async createCluster(@Body() createClusterDto: ClusterCreateDto) {
     this.logger.debug({
       file: ClusterController.name,
-      function: this.create.name,
+      function: this.createCluster.name,
       createClusterDto: createClusterDto,
     });
-    // return this.clusterService.create(createClusterDto);
+    return this.clusterService.createCluster(createClusterDto);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateClusterDto: ClusterUpdateDto) {
+  async updateCluster(@Param('id') id: string, @Body() updateClusterDto: ClusterUpdateDto) {
     this.logger.debug({
       file: ClusterController.name,
-      function: this.update.name,
+      function: this.updateCluster.name,
       id: id,
       updateClusterDto: updateClusterDto,
     });
-    // return this.clusterService.update(id, updateClusterDto);
+
+    updateClusterDto.id = id;
+
+    return this.clusterService.updateCluster(updateClusterDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string) {
+  async deleteCluster(@Param('id') id: string) {
     this.logger.debug({
       file: ClusterController.name,
-      function: this.remove.name,
+      function: this.deleteCluster.name,
       id: id,
     });
-    // return this.clusterService.remove(id);
+    return this.clusterService.deleteCluster(id);
   }
 }
