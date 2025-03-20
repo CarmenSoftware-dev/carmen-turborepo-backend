@@ -1,0 +1,15 @@
+meta {
+  name: 04 - Get Profile
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/api/auth/profile
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdiNGU4YjEwLTJmMjYtNGQ3MS1hYzc2LWM4NWM1MWU2MmE2NCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc0MjQ1OTUxMSwiZXhwIjoxNzQyNDU5NTIxfQ.qEwdIPWbv6tqF_8JhjZyIHwdmL7xVlwhEH66M9GyWAo
+}

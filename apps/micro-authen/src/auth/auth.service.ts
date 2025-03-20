@@ -16,6 +16,7 @@ import {
 import { ForgotPasswordDto } from './dto/forgotpassword.dto';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword } from '../utils/bcrypt';
+import { config } from '../libs/config.env';
 
 @Injectable()
 export class AuthService {
@@ -56,68 +57,23 @@ export class AuthService {
       };
     }
 
-    const userInfo = await this.prisma.tb_user_profile.findFirst({
-      where: {
-        user_id: session.user.id,
-      },
-      select: {
-        firstname: true,
-        middlename: true,
-        lastname: true,
-      },
+    const payload = { id: session.user.id, email: session.user.email };
+
+    const access_token = this.jwtService.sign(payload, {
+      expiresIn: config.JWT_EXPIRES_IN,
     });
-
-    const userBusinessUnit = await this.prisma.tb_user_tb_business_unit
-    .findMany({
-      where: {
-        user_id: session.user.id,
-        is_active: true,
-      },
-      select: {
-        is_default: true,
-        tb_business_unit: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    })
-    .then((res) => {
-      return res.map((item) => {
-        return {
-          id: item.tb_business_unit.id,
-          name: item.tb_business_unit.name,
-          is_default: item.is_default,
-        };
-      });
-    });
-
-    // const access_token = this.jwtService.sign(
-    //   { email: loginDto.email },
-    //   { expiresIn: '1h' },
-    // );
-
-    // const refresh_token = this.jwtService.sign(
-    //   { email: loginDto.email },
-    //   { expiresIn: '1d' },
-    // );
 
     return {
       data: {
-        user_id: session.user.id,
-        email: session.user.email,
-        access_token: session.access_token,
+        access_token: access_token,
         refresh_token: session.refresh_token,
-        user_info: userInfo,
-        business_unit: userBusinessUnit,
       },
       response: { status: HttpStatus.OK, message: 'Login successful' },
     };
   }
 
   async logout(logoutDto: LogoutDto, version: string) {
-    const { error } = await this.supabase.auth.signOut();
+    const { error } = await this.supabase.auth.signOut({ scope: 'global' });
 
     this.logger.log({
       file: AuthService.name,
@@ -205,6 +161,9 @@ export class AuthService {
       };
     }
 
+    registerConfirmDto.email = payload.email;
+    registerConfirmDto.username = payload.username;
+
     if (
       payload.email !== registerConfirmDto.email ||
       payload.username !== registerConfirmDto.username
@@ -253,19 +212,19 @@ export class AuthService {
 
     const createUser = await this.prisma.tb_user.create({
       data: {
+        id: data.user.id,
         username: registerConfirmDto.username,
         email: registerConfirmDto.email,
         is_active: true,
       },
     });
 
-    const hashedPassword = await hashPassword(registerConfirmDto.password);
-    console.log(hashedPassword, 'password');
+    const hashedPassword = hashPassword(registerConfirmDto.password);
 
     await this.prisma.tb_password.create({
       data: {
         user_id: createUser.id,
-        hash: registerConfirmDto.password,
+        hash: hashedPassword,
         is_active: true,
       },
     });
@@ -301,40 +260,41 @@ export class AuthService {
 
     if (error) {
       return {
-        response: { status: HttpStatus.BAD_REQUEST, message: error.message },
+        response: { status: HttpStatus.UNAUTHORIZED, message: error.message },
       };
     }
 
+    const payload = {
+      id: data.session.user.id,
+      email: data.session.user.email,
+    };
+
+    const access_token = this.jwtService.sign(payload, {
+      expiresIn: config.JWT_EXPIRES_IN,
+    });
+
     return {
-      data: data,
+      data: {
+        access_token: access_token,
+        refresh_token: data.session.refresh_token,
+      },
       response: { status: HttpStatus.OK, message: 'Refresh token successful' },
     };
   }
 
-  // async verifyToken(verifyTokenDto: any, version: string) {
-  //   const { data, error } = await this.supabase.auth.verifyOtp({
-  //     email: verifyTokenDto.email,
-  //     token: verifyTokenDto.token,
-  //   });
-
-  //   this.logger.log({
-  //     file: AuthService.name,
-  //     function: this.verifyToken.name,
-  //     verifyTokenDto: verifyTokenDto,
-  //     version: version,
-  //   });
-
-  //   if (error) {
-  //     return {
-  //       response: { status: HttpStatus.BAD_REQUEST, message: error.message },
-  //     };
-  //   }
-
-  //   return {
-  //     data: data,
-  //     response: { status: HttpStatus.OK, message: 'Verify token successful' },
-  //   };
-  // }
+  async validateToken(validateTokenDto: any, version: string) {
+    try {
+      const payload = await this.jwtService.verify(validateTokenDto);
+      return {
+        data: payload,
+        response: { status: HttpStatus.OK, message: 'Verify token successful' },
+      };
+    } catch (error: any) {
+      return {
+        response: { status: HttpStatus.UNAUTHORIZED, message: error.message },
+      };
+    }
+  }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto, version: string) {
     const { data, error } = await this.supabase.auth.resetPasswordForEmail(
@@ -438,6 +398,74 @@ export class AuthService {
     return {
       data: data,
       response: { status: HttpStatus.OK, message: 'Change email successful' },
+    };
+  }
+
+  async getUserProfile(id: string, version: string) {
+    const user = await this.prisma.tb_user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+
+    console.log(user, 'user');
+    
+
+    const userInfo = await this.prisma.tb_user_profile.findFirst({
+      where: {
+        user_id: id,
+      },
+      select: {
+        firstname: true,
+        middlename: true,
+        lastname: true,
+      },
+    });
+
+    console.log(userInfo, 'userInfo');
+    
+
+    const userBusinessUnit = await this.prisma.tb_user_tb_business_unit
+      .findMany({
+        where: {
+          user_id: id,
+          is_active: true,
+        },
+        select: {
+          is_default: true,
+          tb_business_unit: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+      .then((res) => {
+        return res.map((item) => {
+          return {
+            id: item.tb_business_unit.id,
+            name: item.tb_business_unit.name,
+            is_default: item.is_default,
+          };
+        });
+      });
+
+    return {
+      data: {
+        id: user.id,
+        email: user.email,
+        user_info: userInfo,
+        business_unit: userBusinessUnit,
+      },
+      response: {
+        status: HttpStatus.OK,
+        message: 'Get user profile successful',
+      },
     };
   }
 }

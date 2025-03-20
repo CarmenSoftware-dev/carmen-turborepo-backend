@@ -34,7 +34,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microAuthenConfig, microClusterConfig } from '@repo/env-config-shared';
 import { ClusterModule } from './ms-cluster/cluster/cluster.module';
 import { BusinessUnitModule } from './ms-cluster/business-unit/business-unit.module';
-
+import { ConfigModule } from '@nestjs/config';
 const AuthenConfig = new microAuthenConfig();
 const ClusterConfig = new microClusterConfig();
 
@@ -52,6 +52,9 @@ const ClusterConfig = new microClusterConfig();
         options: { host: ClusterConfig.host, port: ClusterConfig.port },
       },
     ]),
+    ConfigModule.forRoot({
+      isGlobal: true, // ทำให้ ConfigModule ใช้ได้ทั่วทั้งแอป
+    }),
     AuthModule,
     DepartmentUserModule,
     UnitCommentModule,

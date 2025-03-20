@@ -14,7 +14,7 @@ export class ClusterService {
     private readonly prismaTenant: typeof PrismaClient_TENANT,
   ) {}
 
-  async createCluster(data: IClusterCreate) {
+  async createCluster(data: IClusterCreate, user_id: string) {
     const findCluster = await this.prismaSystem.tb_cluster.findFirst({
       where: {
         code: data.code,
@@ -32,7 +32,10 @@ export class ClusterService {
     }
 
     const createCluster = await this.prismaSystem.tb_cluster.create({
-      data,
+      data: {
+        ...data,
+        created_by_id: user_id,
+      },
     });
 
     return {
@@ -44,7 +47,7 @@ export class ClusterService {
     };
   }
 
-  async updateCluster(data: IClusterUpdate) {
+  async updateCluster(data: IClusterUpdate, user_id: string) {
     const cluster = await this.prismaSystem.tb_cluster.findUnique({
       where: {
         id: data.id,
@@ -54,7 +57,7 @@ export class ClusterService {
     if (!cluster) {
       return {
         response: {
-          status: HttpStatus.NOT_FOUND,
+          status: HttpStatus.NO_CONTENT,
           message: 'Cluster not found',
         },
       };
@@ -81,7 +84,11 @@ export class ClusterService {
 
     await this.prismaSystem.tb_cluster.update({
       where: { id: data.id },
-      data,
+      data: {
+        ...data,
+        updated_at: new Date(),
+        updated_by_id: user_id,
+      },
     });
 
     return {
@@ -93,22 +100,27 @@ export class ClusterService {
     };
   }
 
-  async deleteCluster(data: any) {
+  async deleteCluster(id: string, user_id: string) {
     const cluster = await this.prismaSystem.tb_cluster.findUnique({
-      where: { id: data.id },
+      where: { id: id },
     });
 
     if (!cluster) {
       return {
         response: {
-          status: HttpStatus.NOT_FOUND,
+          status: HttpStatus.NO_CONTENT,
           message: 'Cluster not found',
         },
       };
     }
 
-    await this.prismaSystem.tb_cluster.delete({
-      where: { id: data.id },
+    await this.prismaSystem.tb_cluster.update({
+      where: { id: id },
+      data: {
+        is_active: false,
+        updated_at: new Date(),
+        updated_by_id: user_id,
+      },
     });
 
     return {
@@ -133,13 +145,13 @@ export class ClusterService {
 
   async getClusterById(id: string) {
     const cluster = await this.prismaSystem.tb_cluster.findUnique({
-      where: { id },
+      where: { id },  
     });
 
     if (!cluster) {
       return {
         response: {
-          status: HttpStatus.NOT_FOUND,
+          status: HttpStatus.NO_CONTENT,
           message: 'Cluster not found',
         },
       };

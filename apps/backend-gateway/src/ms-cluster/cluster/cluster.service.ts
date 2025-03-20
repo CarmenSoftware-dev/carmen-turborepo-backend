@@ -1,10 +1,4 @@
-import {
-  ConsoleLogger,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { ConsoleLogger, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, Observable } from 'rxjs';
 import { IClusterCreate, IClusterUpdate } from './dto/cluster.dto';
@@ -16,10 +10,10 @@ export class ClusterService {
     @Inject('CLUSTER_SERVICE') private readonly clusterService: ClientProxy,
   ) {}
 
-  async createCluster(data: IClusterCreate) {
+  async createCluster(data: IClusterCreate, user_id: string) {
     const res: Observable<any> = this.clusterService.send(
       { cmd: 'cluster.create', service: 'cluster' },
-      { data: data },
+      { data: data, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -30,17 +24,17 @@ export class ClusterService {
       res: response,
     });
 
-    if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+    if (response.response.status !== HttpStatus.CREATED) {
+      return response.response;
     }
 
     return response.data;
   }
 
-  async updateCluster(data: IClusterUpdate) {
+  async updateCluster(data: IClusterUpdate, user_id: string) {
     const res: Observable<any> = this.clusterService.send(
       { cmd: 'cluster.update', service: 'cluster' },
-      { data: data },
+      { data: data, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -52,16 +46,16 @@ export class ClusterService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
   }
 
-  async deleteCluster(id: string) {
+  async deleteCluster(id: string, user_id: string) {
     const res: Observable<any> = this.clusterService.send(
       { cmd: 'cluster.delete', service: 'cluster' },
-      { data: id },
+      { id: id, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -73,13 +67,13 @@ export class ClusterService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
   }
 
-  async listCluster() {
+  async getlistCluster() {
     const res: Observable<any> = this.clusterService.send(
       { cmd: 'cluster.list', service: 'cluster' },
       { data: null },
@@ -89,12 +83,12 @@ export class ClusterService {
 
     this.logger.log({
       file: ClusterService.name,
-      function: this.listCluster.name,
+      function: this.getlistCluster.name,
       res: response,
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
@@ -103,7 +97,7 @@ export class ClusterService {
   async getClusterById(id: string) {
     const res: Observable<any> = this.clusterService.send(
       { cmd: 'cluster.get-by-id', service: 'cluster' },
-      { data: id },
+      { id: id },
     );
 
     const response = await firstValueFrom(res);
@@ -115,7 +109,7 @@ export class ClusterService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;

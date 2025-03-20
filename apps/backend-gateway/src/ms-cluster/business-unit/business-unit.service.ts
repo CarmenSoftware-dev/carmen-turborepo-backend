@@ -16,10 +16,10 @@ export class BusinessUnitService {
     private readonly businessUnitService: ClientProxy,
   ) {}
 
-  async createBusinessUnit(data: IBusinessUnitCreate) {
+  async createBusinessUnit(data: IBusinessUnitCreate, user_id: string) {
     const res: Observable<any> = this.businessUnitService.send(
       { cmd: 'business-unit.create', service: 'business-unit' },
-      { data: data },
+      { data: data, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -30,17 +30,17 @@ export class BusinessUnitService {
       res: response,
     });
 
-    if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+    if (response.response.status !== HttpStatus.CREATED) {
+      return response.response;
     }
 
     return response.data;
   }
 
-  async updateBusinessUnit(data: IBusinessUnitUpdate) {
+  async updateBusinessUnit(data: IBusinessUnitUpdate, user_id: string) {
     const res: Observable<any> = this.businessUnitService.send(
       { cmd: 'business-unit.update', service: 'business-unit' },
-      { data: data },
+      { data: data, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -52,16 +52,16 @@ export class BusinessUnitService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
   }
 
-  async deleteBusinessUnit(id: string) {
+  async deleteBusinessUnit(id: string, user_id: string) {
     const res: Observable<any> = this.businessUnitService.send(
       { cmd: 'business-unit.delete', service: 'business-unit' },
-      { id: id },
+      { id: id, user_id: user_id },
     );
 
     const response = await firstValueFrom(res);
@@ -73,7 +73,7 @@ export class BusinessUnitService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
@@ -82,7 +82,7 @@ export class BusinessUnitService {
   async getBusinessUnitList() {
     const res: Observable<any> = this.businessUnitService.send(
       { cmd: 'business-unit.list', service: 'business-unit' },
-      {},
+      { data: null },
     );
 
     const response = await firstValueFrom(res);
@@ -94,7 +94,7 @@ export class BusinessUnitService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;
@@ -115,7 +115,7 @@ export class BusinessUnitService {
     });
 
     if (response.response.status !== HttpStatus.OK) {
-      throw new HttpException(response.response, response.response.status);
+      return response.response;
     }
 
     return response.data;

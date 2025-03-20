@@ -1,34 +1,51 @@
 import { Controller } from '@nestjs/common';
 import { ClusterService } from './cluster.service';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { IClusterCreate, IClusterUpdate } from './interface/cluster.interface';
 
 @Controller()
 export class ClusterController {
   constructor(private readonly clusterService: ClusterService) {}
 
   @MessagePattern({ cmd: 'cluster.create', service: 'cluster' })
-  async createCluster(data: any) {
-    return this.clusterService.createCluster(data);
+  async createCluster(@Payload() payload: any) {
+    const createCluster: IClusterCreate = {
+      ...payload.data,
+    };
+
+    const user_id = payload.user_id;
+
+    return this.clusterService.createCluster(createCluster, user_id);
   }
 
   @MessagePattern({ cmd: 'cluster.update', service: 'cluster' })
-  async updateCluster(data: any) {
-    return this.clusterService.updateCluster(data);
+  async updateCluster(@Payload() payload: any) {
+    const updateCluster: IClusterUpdate = {
+      ...payload.data,
+    };
+
+    const user_id = payload.user_id;
+
+    return this.clusterService.updateCluster(updateCluster, user_id);
   }
 
   @MessagePattern({ cmd: 'cluster.delete', service: 'cluster' })
-  async deleteCluster(data: any) {
-    return this.clusterService.deleteCluster(data);
+  async deleteCluster(@Payload() payload: any) {
+    const id = payload.id;
+    const user_id = payload.user_id;
+
+    return this.clusterService.deleteCluster(id, user_id);
   }
 
   @MessagePattern({ cmd: 'cluster.list', service: 'cluster' })
-  async listCluster(data: any) {
+  async listCluster(@Payload() payload: any) {
     return this.clusterService.listCluster();
   }
 
   @MessagePattern({ cmd: 'cluster.get-by-id', service: 'cluster' })
-  async getClusterById(data: any) {
-    return this.clusterService.getClusterById(data);
-  }
+  async getClusterById(@Payload() payload: any) {
+    const id = payload.id;
 
+    return this.clusterService.getClusterById(id);
+  }
 }

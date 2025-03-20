@@ -6,7 +6,7 @@ import { microAuthenConfig } from '@repo/env-config-shared';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
-
+import { JwtModule } from '@nestjs/jwt';
 
 const AuthenConfig = new microAuthenConfig();
 
@@ -19,6 +19,9 @@ const AuthenConfig = new microAuthenConfig();
         options: { host: AuthenConfig.host, port: AuthenConfig.port },
       },
     ]),
+    JwtModule.register({
+      secret: process.env.SUPABASE_JWT_SECRET,
+    }),
     PassportModule,
     ConfigModule,
   ],
@@ -27,5 +30,6 @@ const AuthenConfig = new microAuthenConfig();
     AuthService,
     JwtStrategy,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

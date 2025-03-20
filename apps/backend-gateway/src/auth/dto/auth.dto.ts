@@ -11,14 +11,14 @@ export type IInviteUser = z.infer<typeof InviteUserSchema>;
 export class InviteUserDto extends createZodDto(InviteUserSchema) {}
 
 export const RegisterConfirmSchema = z.object({
-  username: z.string({ required_error: 'Username field is required' }),
-  email: z
-    .string({ required_error: 'Email field is required' })
-    .email({ message: 'Invalid email address' }),
+  // username: z.string({ required_error: 'Username field is required' }),
+  // email: z
+  //   .string({ required_error: 'Email field is required' })
+  //   .email({ message: 'Invalid email address' }),
+  email_token: z.string({ required_error: 'Email token field is required' }),
   password: z
     .string({ required_error: 'Password field is required' })
     .min(6, { message: 'Password must be at least 6 characters long' }),
-  email_token: z.string({ required_error: 'Email token field is required' }),
   user_info: z.object({
     first_name: z.string({ required_error: 'First name field is required' }),
     middle_name: z.string({ required_error: 'Middle name field is required' }),

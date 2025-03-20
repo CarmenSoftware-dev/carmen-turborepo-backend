@@ -73,6 +73,14 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto, version);
   }
 
+  @MessagePattern({ cmd: 'get-user-profile', service: 'auth' })
+  getUserProfile(@Payload() payload: any) {
+    const version: string = payload.version ?? 1;
+    const id = payload.id;
+
+    return this.authService.getUserProfile(id, version);
+  }
+
   // @MessagePattern({ cmd: 'reset-password', service: 'auth' })
   // resetPassword(@Payload() payload: any) {
   //   const version: string = payload.version ?? 1;

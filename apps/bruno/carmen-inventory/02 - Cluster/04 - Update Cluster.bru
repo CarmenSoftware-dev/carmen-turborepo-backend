@@ -4,8 +4,20 @@ meta {
   seq: 4
 }
 
-patch {
-  url: 
-  body: none
-  auth: none
+put {
+  url: {{host}}/api/config/cluster/92b9d318-7bad-4f98-83a2-4d7952215657
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5MjI5YzBmLWI4ZGYtNGM2Ni1hMTc0LTViOTNlYjIxNTcxNSIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc0MjQ2NDQxMCwiZXhwIjoxNzQyNDY4MDEwfQ.3lyqZv-LX-LrkyWE5tqgz7qTx78JQTI1Zo91CFDZHz4
+}
+
+body:json {
+  {
+    "code": "C-001 Update",
+    "name": "Cluster 01 Update",
+    "is_active": false
+  }
 }

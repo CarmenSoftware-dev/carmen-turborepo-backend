@@ -8,8 +8,8 @@ export interface IInviteUser {
 }
 
 export interface IRegisterConfirm {
-  username: string;
-  email: string;
+  username?: string;
+  email?: string;
   password: string;
   email_token: string;
   user_info: IUserInfo;

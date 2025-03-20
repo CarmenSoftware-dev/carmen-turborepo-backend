@@ -17,16 +17,31 @@ export class BusinessUnitService {
     private readonly prismaTenant: typeof PrismaClient_TENANT,
   ) {}
 
-  async createBusinessUnit(data: IBusinessUnitCreate) {
-    const findBusinessUnit =
-      await this.prismaSystem.tb_business_unit.findUnique({
-        where: {
-          cluster_id_code: {
-            cluster_id: data.cluster_id,
-            code: data.code,
-          },
+  async createBusinessUnit(data: IBusinessUnitCreate, user_id: string) {
+    const cluster = await this.prismaSystem.tb_cluster.findUnique({
+      where: {
+        id: data.cluster_id,
+      },
+    });
+
+    if (!cluster) {
+      return {
+        response: {
+          status: HttpStatus.NO_CONTENT,
+          message: 'Cluster not found',
         },
-      });
+      };
+    }
+
+    const findBusinessUnit = await this.prismaSystem.tb_business_unit.findFirst(
+      {
+        where: {
+          cluster_id: data.cluster_id,
+          code: data.code,
+          name: data.name,
+        },
+      },
+    );
 
     if (findBusinessUnit) {
       return {
@@ -38,7 +53,10 @@ export class BusinessUnitService {
     }
 
     const createBusinessUnit = await this.prismaSystem.tb_business_unit.create({
-      data,
+      data: {
+        ...data,
+        created_by_id: user_id,
+      },
     });
 
     return {
@@ -50,7 +68,7 @@ export class BusinessUnitService {
     };
   }
 
-  async updateBusinessUnit(data: IBusinessUnitUpdate) {
+  async updateBusinessUnit(data: IBusinessUnitUpdate, user_id: string) {
     const businessUnit = await this.prismaSystem.tb_business_unit.findUnique({
       where: {
         id: data.id,
@@ -66,11 +84,53 @@ export class BusinessUnitService {
       };
     }
 
+    if (data.cluster_id) {
+      const cluster = await this.prismaSystem.tb_cluster.findUnique({
+        where: {
+          id: data.cluster_id,
+        },
+      });
+
+      if (!cluster) {
+        return {
+          response: {
+            status: HttpStatus.NO_CONTENT,
+            message: 'Cluster not found',
+          },
+        };
+      }
+    }
+
+    const findBusinessUnit = await this.prismaSystem.tb_business_unit.findFirst(
+      {
+        where: {
+          cluster_id: data.cluster_id ?? businessUnit.cluster_id,
+          code: data.code ?? businessUnit.code,
+          name: data.name ?? businessUnit.name,
+          id: {
+            not: data.id,
+          },
+        },
+      },
+    );
+
+    if (findBusinessUnit) {
+      return {
+        response: {
+          status: HttpStatus.CONFLICT,
+          message: 'Business unit already exists',
+        },
+      };
+    }
     await this.prismaSystem.tb_business_unit.update({
       where: {
         id: data.id,
       },
-      data,
+      data: {
+        ...data,
+        updated_by_id: user_id,
+        updated_at: new Date(),
+      },
     });
 
     return {
@@ -82,7 +142,7 @@ export class BusinessUnitService {
     };
   }
 
-  async deleteBusinessUnit(id: string) {
+  async deleteBusinessUnit(id: string, user_id: string) {
     const businessUnit = await this.prismaSystem.tb_business_unit.findUnique({
       where: {
         id,
@@ -92,14 +152,19 @@ export class BusinessUnitService {
     if (!businessUnit) {
       return {
         response: {
-          status: HttpStatus.NOT_FOUND,
+          status: HttpStatus.NO_CONTENT,
           message: 'Business unit not found',
         },
       };
     }
 
-    await this.prismaSystem.tb_business_unit.delete({
+    await this.prismaSystem.tb_business_unit.update({
       where: { id },
+      data: {
+        is_active: false,
+        updated_by_id: user_id,
+        updated_at: new Date(),
+      },
     });
 
     return {
@@ -132,7 +197,7 @@ export class BusinessUnitService {
     if (!businessUnit) {
       return {
         response: {
-          status: HttpStatus.NOT_FOUND,
+          status: HttpStatus.NO_CONTENT,
           message: 'Business unit not found',
         },
       };

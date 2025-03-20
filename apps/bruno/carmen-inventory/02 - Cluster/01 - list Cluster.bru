@@ -7,5 +7,9 @@ meta {
 get {
   url: {{host}}/api/config/cluster
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM5MjI5YzBmLWI4ZGYtNGM2Ni1hMTc0LTViOTNlYjIxNTcxNSIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc0MjQ2NTA5OSwiZXhwIjoxNzQyNDY4Njk5fQ.LTC_S7rufTocGKYk61nus9mI30ENocs3EY1U1dlfclc
 }

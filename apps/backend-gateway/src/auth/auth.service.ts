@@ -134,15 +134,45 @@ export class AuthService {
   }
 
   async refreshToken(refreshTokenDto: any, version: string) {
-    return await this.authAxios.post(`/refresh-token`, refreshTokenDto, {
-      params: { version },
+    const res: Observable<any> = this.authService.send(
+      { cmd: 'refresh-token', service: 'auth' },
+      { data: refreshTokenDto, version: version },
+    );
+
+    const response = await firstValueFrom(res);
+
+    this.logger.log({
+      file: AuthService.name,
+      function: this.refreshToken.name,
+      res: response,
     });
+
+    if (response.response.status !== HttpStatus.OK) {
+      throw new HttpException(response.response, response.response.status);
+    }
+
+    return response.data;
   }
 
-  async verifyToken(verifyTokenDto: any, version: string) {
-    return await this.authAxios.post(`/verify-token`, verifyTokenDto, {
-      params: { version },
+  async getUserProfile(id: string, version: string) {
+    const res: Observable<any> = this.authService.send(
+      { cmd: 'get-user-profile', service: 'auth' },
+      { id: id, version: version },
+    );
+
+    const response = await firstValueFrom(res);
+
+    this.logger.log({
+      file: AuthService.name,
+      function: this.getUserProfile.name,
+      res: response,
     });
+
+    if (response.response.status !== HttpStatus.OK) {
+      throw new HttpException(response.response, response.response.status);
+    }
+
+    return response.data;
   }
 
   async forgotPassword(forgotPasswordDto: any, version: string) {

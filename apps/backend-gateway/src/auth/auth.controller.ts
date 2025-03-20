@@ -1,12 +1,21 @@
-import { Controller, Logger, Post, Body, Query, Param, ConsoleLogger, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Logger, Post, Body, Query, Param, ConsoleLogger, HttpCode, HttpStatus, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { InviteUserDto, LoginDto, RegisterConfirmDto } from './dto/auth.dto';
-
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   private logger = new ConsoleLogger(AuthController.name);
+
+  @Get('profile')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async profile(@Req() req: Request) {
+    return req['user'];
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -68,6 +77,20 @@ export class AuthController {
     return this.authService.registerConfirm(registerConfirmDto, version);
   }
   
+  // @Post('verify-token')
+  // async verifyToken(
+  //   @Body() verifyTokenDto: any,
+  //   @Query('version') version: string,
+  // ) {
+  //   this.logger.log({
+  //     file: AuthController.name,
+  //     function: this.verifyToken.name,
+  //     verifyTokenDto: verifyTokenDto,
+  //     version: version,
+  //   });
+  //   return this.authService.verifyToken(verifyTokenDto, version);
+  // }
+
   @Post('refresh-token')
   async refreshToken(
     @Body() refreshTokenDto: any,
@@ -80,20 +103,6 @@ export class AuthController {
       version: version,
     });
     return this.authService.refreshToken(refreshTokenDto, version);
-  }
-
-  @Post('verify-token')
-  async verifyToken(
-    @Body() verifyTokenDto: any,
-    @Query('version') version: string,
-  ) {
-    this.logger.log({
-      file: AuthController.name,
-      function: this.verifyToken.name,
-      verifyTokenDto: verifyTokenDto,
-      version: version,
-    });
-    return this.authService.verifyToken(verifyTokenDto, version);
   }
 
   @Post('forgot-password')
